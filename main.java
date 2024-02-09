@@ -29,15 +29,15 @@ class Graph {
         this.vertices = vertices;
     }
 
-    //Use Dijkstra's algorithm to find the longest path
-    public Map<Vertex, Integer> longestPath(Vertex start) {
+    // Use Dijkstra's algorithm to find the longest path
+    public Map<Vertex, Integer> longestPath(Vertex start, Map<Vertex, Vertex> previousVertices) {
         // Multiply all edge costs by -1
         for (Edge edge : edges) {
             edge.cost *= -1;
         }
 
         // Run Dijkstra's algorithm to find the shortest path
-        Map<Vertex, Integer> shortestDistances = dijkstra(start);
+        Map<Vertex, Integer> shortestDistances = dijkstra(start, previousVertices);
 
         // Multiply all edge costs by -1 again
         for (Edge edge : edges) {
@@ -52,7 +52,7 @@ class Graph {
         return shortestDistances;
     }
 
-    public Map<Vertex, Integer> dijkstra(Vertex start) {
+    public Map<Vertex, Integer> dijkstra(Vertex start, Map<Vertex, Vertex> previousVertices) {
         Map<Vertex, Integer> distance = new HashMap<>();
         PriorityQueue<VertexDistancePair> pq = new PriorityQueue<>(Comparator.comparingInt(pair -> pair.distance));
 
@@ -60,7 +60,8 @@ class Graph {
         pq.add(new VertexDistancePair(start, 0));
 
         while (!pq.isEmpty()) {
-            Vertex current = pq.poll().vertex;
+            VertexDistancePair currentPair = pq.poll();
+            Vertex current = currentPair.vertex;
 
             for (Edge edge : edges) {
                 if (edge.from.equals(current)) {
@@ -70,6 +71,8 @@ class Graph {
                     if (!distance.containsKey(neighbor) || newDistance < distance.get(neighbor)) {
                         distance.put(neighbor, newDistance);
                         pq.add(new VertexDistancePair(neighbor, newDistance));
+                        // Update the previous vertex for the neighbor
+                        previousVertices.put(neighbor, current);
                     }
                 }
             }
@@ -91,6 +94,7 @@ class Graph {
 
 public class main {
     public static void main(String[] args) {
+        System.out.println("Hello, World!");
 
         Vertex a = new Vertex(1);
         Vertex b = new Vertex(2);
@@ -113,18 +117,31 @@ public class main {
         Graph graph = new Graph(edges, vertices);
 
         Vertex startVertex = a;
-        Map<Vertex, Integer> longestDistances = graph.longestPath(startVertex);
+
+        // For storing previous visited vertices
+        Map<Vertex, Vertex> previousVertices = new HashMap<>();
+
+        Map<Vertex, Integer> longestDistances = graph.longestPath(startVertex, previousVertices);
 
         System.out.println("Longest distances from vertex " + startVertex.id + ":");
         for (Map.Entry<Vertex, Integer> entry : longestDistances.entrySet()) {
-            System.out.println("To vertex " + entry.getKey().id + ": " + entry.getValue());
+            System.out.println("To vertex " + entry.getKey().id + ": " + entry.getValue() +
+                    ", Previous vertex: " + (previousVertices.containsKey(entry.getKey()) ?
+                    previousVertices.get(entry.getKey()).id : "None"));
         }
 
-        Map<Vertex, Integer> shortestDistances = graph.dijkstra(startVertex);
+        // Clear previous visited vertices for the next run
+        previousVertices.clear();
+
+        Map<Vertex, Integer> shortestDistances = graph.dijkstra(startVertex, previousVertices);
 
         System.out.println("Shortest distances from vertex " + startVertex.id + ":");
         for (Map.Entry<Vertex, Integer> entry : shortestDistances.entrySet()) {
-            System.out.println("To vertex " + entry.getKey().id + ": " + entry.getValue());
+            System.out.println("To vertex " + entry.getKey().id + ": " + entry.getValue() +
+                    ", Previous vertex: " + (previousVertices.containsKey(entry.getKey()) ?
+                    previousVertices.get(entry.getKey()).id : "None"));
         }
+        
+        System.out.println(shortestDistances.entrySet)
     }
 }
