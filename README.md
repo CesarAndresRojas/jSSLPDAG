@@ -1,5 +1,5 @@
 # jSSLPDAG
-A Simple Java program that calculates the Single Source Longest Path  of a Directed Acyclic Graph.
+A Simple Java program that calculates the Single Source Longest Path  of a Directed Acyclic Graph with unit cost edges.
 
 ## Overview
 
