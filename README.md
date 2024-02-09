@@ -24,7 +24,8 @@ Contains the main logic for Dijkstra's algorithm. It includes methods for findin
 
 ### 4. Main
 
-The main class showcasing the usage of the `Graph` class on a sample graph.
+The main class showcasing the usage of the `Graph` class on a sample graph. The sample graph is the one shown in the DAG wikipedia article.
+https://en.wikipedia.org/wiki/Directed_acyclic_graph?useskin=vector
 
 ## How to Use
 
